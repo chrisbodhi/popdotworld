@@ -33,7 +33,6 @@ export class Map extends Component<Props> {
 
   render() {
     const { center, handleClick, selected, zoom } = this.props;
-    if (selected.length) { console.log("selected", selected); }
     return (
       <ComposableMap
         projection="miller"
@@ -49,11 +48,10 @@ export class Map extends Component<Props> {
         }}
         >
         <ZoomableGroup center={center} zoom={zoom}>
-          <Geographies geography={geo}>
+          <Geographies geography={geo} disableOptimization>
             {(geographies: any, projection: any) => geographies.map((geography: any, i: number) => {
               const isSelected: boolean = selected.length ? selected === geography.properties.formal_en : false;
-              if (selected.length) { console.log("selected in Geos", selected); }
-              console.log("geography.properties.formal_en", geography.properties.formal_en);
+
               return (
                 <Geography
                   key={i}
@@ -62,8 +60,8 @@ export class Map extends Component<Props> {
                   onClick={handleClick}
                   style={{
                     default: {
-                      fill: popScale(geography.properties.pop_est),
-                      stroke: isSelected ? "#FFFF00" : "#607D8B",
+                      fill: isSelected ? "#FFFF00" : popScale(geography.properties.pop_est),
+                      stroke: "#607D8B",
                       strokeWidth: 0.75,
                       outline: "none",
                     },
