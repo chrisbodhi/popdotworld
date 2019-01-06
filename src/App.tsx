@@ -25,6 +25,7 @@ interface SparqlResults {
 
 interface State {
   countryName: string;
+  loading: boolean;
   population: string;
   query: string;
 }
@@ -36,6 +37,7 @@ class App extends Component<Props, State> {
     super(props);
     this.state = {
       countryName: "",
+      loading: false,
       population: "",
       query: ""
     } as State;
@@ -44,6 +46,7 @@ class App extends Component<Props, State> {
   handleClick = (geo: any): void => {
     const countryName = geo.properties.formal_en;
     if (countryName !== this.state.countryName) {
+      this.setState({ loading: true });
       this.getPopData(countryName);
     }
   }
@@ -67,6 +70,8 @@ class App extends Component<Props, State> {
       }
     }).catch((err: AxiosError) => {
       console.log(`\n\n\nerererer\n\n\n${err.message}`);
+    }).finally(() => {
+      this.setState({ loading: false });
     });
   }
 
@@ -85,8 +90,9 @@ class App extends Component<Props, State> {
     return (
       <div className="App">
         <PopulationDisplay
-          countryName={this.state.countryName}
-          population={this.state.population}
+          countryName={countryName}
+          population={population}
+          isLoading={loading}
         />
         <Query query={query} />
         <Map handleClick={this.handleClick} />

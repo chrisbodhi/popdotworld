@@ -2,6 +2,7 @@ import React from "react";
 
 interface Props {
   countryName: string;
+  isLoading: boolean;
   population: string;
 }
 
@@ -21,11 +22,14 @@ export const formatLongNumber = (longNum: string): string => {
 };
 
 export const PopulationDisplay = (props: Props) => {
+  if (props.isLoading) {
+    return <div>...</div>;
+  }
   return props.population
     ? (<div>
         {props.countryName}: {formatLongNumber(props.population)}
       </div>)
-    : <div />
+    : <div />;
 };
 
 export default PopulationDisplay;
