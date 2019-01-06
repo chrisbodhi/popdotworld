@@ -6,14 +6,32 @@ import {
   Geography,
 } from "react-simple-maps";
 import { scaleLinear } from "d3-scale";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 import geo from "./static/world-50m-with-population.json";
 
 interface State {
   countryName: string;
+  population: string;
 }
 
 interface Props {}
+
+interface SparqlResponse {
+  head: SparqlHead;
+  results: SparqlResults;
+}
+
+interface SparqlHead {
+  link: any[];
+  vars: string[];
+}
+
+interface SparqlResults {
+  distinct: boolean;
+  ordered: boolean;
+  bindings: any[];
+}
 
 const wrapperStyles = {
   width: "100%",
@@ -28,18 +46,54 @@ const popScale = scaleLinear()
 export class Map extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { countryName: "" } as State;
+    this.state = { countryName: "", population: "" } as State;
   }
 
-  handleClick = (geo: any) => {
+  handleClick = (geo: any): void => {
     const countryName = geo.properties.formal_en;
-    this.setState({ countryName });
+    this.getPopData(countryName);
+  }
+
+  getPopData(name: string): Promise<void> {
+    return axios.get("http://dbpedia.org/sparql", {
+      headers: {
+        "Content-Type": "application/sparql-query",
+      },
+      params: {
+        query: this.generateQuery(name).replace(/\+/g, " ")
+      }
+    }).then(({ data }: { data: SparqlResponse }): void => {
+      if (data.results.bindings.length) {
+        const population = data
+          .results
+          .bindings[0]
+          .population
+          .value;
+        this.setState({ countryName: name, population });
+      } else {
+        this.setState({ countryName: name, population: `¯\\_(ツ)_/¯` });
+      }
+    }).catch((err: AxiosError) => {
+      console.log(`\n\n\nerererer\n\n\n${err.message}`);
+    });
+  }
+
+  generateQuery(name: string): string {
+    return `SELECT ?population WHERE {
+      ?country foaf:name|dbo:longName "${name}"@en .
+      ?country dbp:populationCensus|dbo:populationTotal ?population .
+    }`;
   }
 
   render() {
     return (
       <div style={wrapperStyles}>
-        <div>{this.state.countryName}</div>
+        {/* todo: make the following div its own component */}
+        {/* <PopulationDisplay
+              countryName={this.state.countryName}
+              population={this.state.population}
+            /> */}
+        <div>{this.state.countryName}: {this.state.population}</div>
         <ComposableMap
           projection="miller"
           projectionConfig={{
