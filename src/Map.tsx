@@ -6,8 +6,9 @@ import {
   Geography,
 } from "react-simple-maps";
 import { scaleLinear } from "d3-scale";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosError } from "axios";
 
+import { PopulationDisplay } from "./PopulationDisplay";
 import geo from "./static/world-50m-with-population.json";
 
 interface State {
@@ -88,12 +89,10 @@ export class Map extends Component<Props, State> {
   render() {
     return (
       <div style={wrapperStyles}>
-        {/* todo: make the following div its own component */}
-        {/* <PopulationDisplay
-              countryName={this.state.countryName}
-              population={this.state.population}
-            /> */}
-        <div>{this.state.countryName}: {this.state.population}</div>
+        <PopulationDisplay
+          countryName={this.state.countryName}
+          population={this.state.population}
+        />
         <ComposableMap
           projection="miller"
           projectionConfig={{
