@@ -52,7 +52,9 @@ export class Map extends Component<Props, State> {
 
   handleClick = (geo: any): void => {
     const countryName = geo.properties.formal_en;
-    this.getPopData(countryName);
+    if (countryName !== this.state.countryName) {
+      this.getPopData(countryName);
+    }
   }
 
   getPopData(name: string): Promise<void> {
@@ -61,18 +63,15 @@ export class Map extends Component<Props, State> {
         "Content-Type": "application/sparql-query",
       },
       params: {
-        query: this.generateQuery(name).replace(/\+/g, " ")
+        query: this.generateQuery(name)
       }
     }).then(({ data }: { data: SparqlResponse }): void => {
-      if (data.results.bindings.length) {
-        const population = data
-          .results
-          .bindings[0]
-          .population
-          .value;
+      const dataInfo = data.results.bindings;
+      if (dataInfo.length) {
+        const population = dataInfo[0].population.value;
         this.setState({ countryName: name, population });
       } else {
-        this.setState({ countryName: name, population: `¯\\_(ツ)_/¯` });
+        this.setState({ countryName: name, population: "¯\\_(ツ)_/¯" });
       }
     }).catch((err: AxiosError) => {
       console.log(`\n\n\nerererer\n\n\n${err.message}`);
