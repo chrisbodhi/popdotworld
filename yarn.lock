@@ -804,6 +804,12 @@
     "@svgr/core" "^2.4.1"
     loader-utils "^1.1.0"
 
+"@types/d3-geo@^1.10.3":
+  version "1.10.3"
+  resolved "https://registry.yarnpkg.com/@types/d3-geo/-/d3-geo-1.10.3.tgz#3c01b2baa480e1108301096328dc2837e7ff4d8a"
+  dependencies:
+    "@types/geojson" "*"
+
 "@types/d3-scale@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@types/d3-scale/-/d3-scale-2.1.0.tgz#da085c551aa4c4ae4845a0111447dea6e04f3d23"
@@ -813,6 +819,10 @@
 "@types/d3-time@*":
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/@types/d3-time/-/d3-time-1.0.9.tgz#c2cf05a3cd51f810b8d8a9bbca0c74030d4e535e"
+
+"@types/geojson@*":
+  version "7946.0.4"
+  resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.4.tgz#4e049756383c3f055dd8f3d24e63fb543e98eb07"
 
 "@types/jest@^23.3.11":
   version "23.3.11"
@@ -2490,13 +2500,21 @@ d3-geo-projection@1.2.2:
     d3-array "1"
     d3-geo "^1.1.0"
 
+d3-geo-projection@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/d3-geo-projection/-/d3-geo-projection-2.5.0.tgz#15b3cd97cfbe5f1a309e0c63bd15fff67bb082f4"
+  dependencies:
+    commander "2"
+    d3-array "1"
+    d3-geo "^1.10.0"
+
 d3-geo@1.6.3:
   version "1.6.3"
   resolved "https://registry.yarnpkg.com/d3-geo/-/d3-geo-1.6.3.tgz#21683a43a061eaba21a7f254b51d5937eb640756"
   dependencies:
     d3-array "1"
 
-d3-geo@^1.1.0:
+d3-geo@^1.1.0, d3-geo@^1.10.0, d3-geo@^1.11.3:
   version "1.11.3"
   resolved "https://registry.yarnpkg.com/d3-geo/-/d3-geo-1.11.3.tgz#5bb08388f45e4b281491faa72d3abd43215dbd1c"
   dependencies:

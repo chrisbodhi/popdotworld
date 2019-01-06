@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosResponse } from "axios";
+import { geoPath } from "d3-geo";
+import { geoTimes } from "d3-geo-projection";
 
 import { Map } from './Map';
 import { PopulationDisplay } from "./PopulationDisplay";
@@ -24,10 +26,12 @@ interface SparqlResults {
 }
 
 interface State {
+  center: number[];
   countryName: string;
   loading: boolean;
   population: string;
   query: string;
+  zoom: number;
 }
 
 interface Props {}
@@ -36,43 +40,50 @@ class App extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      center: [0, 20],
       countryName: "",
       loading: false,
       population: "",
-      query: ""
+      query: "",
+      zoom: 1
     } as State;
   }
 
-  handleClick = (geo: any): void => {
+  handleClick = async (geo: any): Promise<void> => {
     const countryName = geo.properties.formal_en;
     if (countryName !== this.state.countryName) {
       this.setState({ loading: true });
-      this.getPopData(countryName);
+      const { center, zoom } = this.getZoomProperties(geo);
+      const population = await this.getPopData(countryName);
+      this.setState({ center, countryName, population, loading: false, zoom });
     }
   }
 
-  getPopData(name: string): Promise<void> {
+  projection() {
+    return geoTimes()
+      .translate([1440 / 2, 780 / 2])
+      .scale(160)
+  }
+
+  getZoomProperties(geo: any): { center: number[]; zoom: number; } {
+    const path = geoPath().projection(this.projection())
+    const center = this.projection().invert(path.centroid(geo))
+    return { center, zoom: 3 };
+  }
+
+  async getPopData(name: string): Promise<string> {
     const query = this.generateQuery(name);
-    return axios.get("http://dbpedia.org/sparql", {
-      headers: {
-        "Content-Type": "application/sparql-query",
-      },
-      params: {
-        query
-      }
-    }).then(({ data }: { data: SparqlResponse }): void => {
+    try {
+      const { data }: { data: SparqlResponse } = await this.sendRequest(query);
       const dataInfo = data.results.bindings;
-      if (dataInfo.length) {
-        const population = dataInfo[0].population.value;
-        this.setState({ countryName: name, population });
-      } else {
-        this.setState({ countryName: name, population: "¯\\_(ツ)_/¯" });
-      }
-    }).catch((err: AxiosError) => {
-      console.log(`\n\n\nerererer\n\n\n${err.message}`);
-    }).finally(() => {
-      this.setState({ loading: false });
-    });
+      const population = dataInfo.length ?
+        dataInfo[0].population.value :
+        "¯\\_(ツ)_/¯";
+      return population;
+    } catch (err) {
+        console.error(err.message);
+        return "";
+    }
   }
 
   generateQuery(name: string): string {
@@ -85,8 +96,27 @@ class App extends Component<Props, State> {
     return query;
   }
 
+  sendRequest(query: string): Promise<AxiosResponse> {
+    return axios.get("http://dbpedia.org/sparql", {
+      headers: { "Content-Type": "application/sparql-query" },
+      params: { query }
+    });
+  }
+
+  resetView = (): void => {
+    this.setState({ center: [0, 20], query: "", zoom: 1 });
+  }
+
   render() {
-    const { countryName, loading, population, query } = this.state;
+    const {
+      center,
+      countryName,
+      loading,
+      population,
+      query,
+      zoom
+    } = this.state;
+
     return (
       <div className="App">
         <PopulationDisplay
@@ -95,7 +125,15 @@ class App extends Component<Props, State> {
           isLoading={loading}
         />
         <Query query={query} />
-        <Map handleClick={this.handleClick} />
+        {query.length ? <button onClick={this.resetView}>
+          Reset view
+        </button> : null}
+        <Map
+          center={center}
+          handleClick={this.handleClick}
+          selected={countryName}
+          zoom={zoom}
+        />
       </div>
     );
   }
