@@ -50,7 +50,7 @@ class App extends Component<Props, State> {
   }
 
   handleClick = async (geo: any): Promise<void> => {
-    const countryName = geo.properties.formal_en;
+    const countryName = geo.properties.brk_name;
     if (countryName !== this.state.countryName) {
       this.setState({ loading: true });
       const { center, zoom } = this.getZoomProperties(geo);

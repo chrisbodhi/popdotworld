@@ -50,7 +50,9 @@ export class Map extends Component<Props> {
         <ZoomableGroup center={center} zoom={zoom}>
           <Geographies geography={geo} disableOptimization>
             {(geographies: any, projection: any) => geographies.map((geography: any, i: number) => {
-              const isSelected: boolean = selected.length ? selected === geography.properties.formal_en : false;
+              const isSelected: boolean = selected.length ?
+                selected === geography.properties.brk_name :
+                false;
 
               return (
                 <Geography
