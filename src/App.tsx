@@ -3,6 +3,7 @@ import axios, { AxiosError } from "axios";
 
 import { Map } from './Map';
 import { PopulationDisplay } from "./PopulationDisplay";
+import { Query } from "./Query";
 
 import './App.css';
 
@@ -70,8 +71,9 @@ class App extends Component<Props, State> {
   }
 
   generateQuery(name: string): string {
-    const query = `SELECT ?population WHERE {
-      ?country foaf:name|dbo:longName "${name}"@en .
+    const query = `
+    SELECT ?population WHERE {
+      ?country dbo:longName|foaf:name "${name}"@en .
       ?country dbp:populationCensus|dbo:populationTotal ?population .
     }`;
     this.setState({ query });
@@ -79,12 +81,14 @@ class App extends Component<Props, State> {
   }
 
   render() {
+    const { countryName, loading, population, query } = this.state;
     return (
       <div className="App">
         <PopulationDisplay
           countryName={this.state.countryName}
           population={this.state.population}
         />
+        <Query query={query} />
         <Map handleClick={this.handleClick} />
       </div>
     );
