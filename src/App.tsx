@@ -5,7 +5,7 @@ import { geoTimes } from "d3-geo-projection";
 
 import { Map } from './Map';
 import { PopulationDisplay } from "./PopulationDisplay";
-import { Query } from "./Query";
+import { QueryPanel } from "./QueryPanel";
 
 import './App.css';
 
@@ -120,10 +120,10 @@ class App extends Component<Props, State> {
           population={population}
           isLoading={loading}
         />
-        <Query query={query} />
-        {query.length ? <button onClick={this.resetView}>
-          Reset view
-        </button> : null}
+        <QueryPanel
+          query={query}
+          resetView={this.resetView}
+        />
         <Map
           center={center}
           handleClick={this.handleClick}
