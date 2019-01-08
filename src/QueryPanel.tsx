@@ -16,7 +16,7 @@ export const QueryPanel = (props: Props) => {
     query.length ? (
       <div className="panel">
         <Query query={query} />
-        <ResetButton resetView=   {resetView} />
+        <ResetButton resetView={resetView} />
       </div>
     ) : null
   );
