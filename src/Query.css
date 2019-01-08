@@ -1,3 +1,12 @@
+span.title {
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
+hr {
+  margin-bottom: 15px;
+}
+
 pre {
   color: blue;
   font-family: 'Courier New', Courier, monospace;

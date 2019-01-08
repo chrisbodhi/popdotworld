@@ -5,7 +5,7 @@ import { geoTimes } from "d3-geo-projection";
 
 import { Map } from './Map';
 import { PopulationDisplay } from "./PopulationDisplay";
-import { Query } from "./Query";
+import { QueryPanel } from "./QueryPanel";
 
 import './App.css';
 
@@ -87,11 +87,7 @@ class App extends Component<Props, State> {
   }
 
   generateQuery(name: string): string {
-    const query = `
-    SELECT ?population WHERE {
-      ?country dbo:longName|foaf:name "${name}"@en .
-      ?country dbp:populationCensus|dbo:populationTotal ?population .
-    }`;
+    const query = `SELECT ?population WHERE {\n\t?country rdfs:label "${name}"@en .\n\t?country dbp:populationCensus|dbo:populationTotal ?population .\n}`;
     this.setState({ query });
     return query;
   }
@@ -124,10 +120,10 @@ class App extends Component<Props, State> {
           population={population}
           isLoading={loading}
         />
-        <Query query={query} />
-        {query.length ? <button onClick={this.resetView}>
-          Reset view
-        </button> : null}
+        <QueryPanel
+          query={query}
+          resetView={this.resetView}
+        />
         <Map
           center={center}
           handleClick={this.handleClick}
