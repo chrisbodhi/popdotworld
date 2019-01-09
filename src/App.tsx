@@ -4,7 +4,7 @@ import { geoPath } from "d3-geo";
 import { geoTimes } from "d3-geo-projection";
 
 import { Map } from './Map';
-import { PopulationDisplay } from "./PopulationDisplay";
+import { InfoPanel } from "./InfoPanel";
 import { QueryPanel } from "./QueryPanel";
 
 import './App.css';
@@ -31,6 +31,7 @@ interface State {
   loading: boolean;
   population: string;
   query: string;
+  year: string;
   zoom: number;
 }
 
@@ -45,8 +46,13 @@ class App extends Component<Props, State> {
       loading: false,
       population: "",
       query: "",
+      year: "1980",
       zoom: 1
     } as State;
+  }
+
+  handleChange = (event: React.FormEvent<HTMLInputElement>) => {
+    this.setState({ year: event.currentTarget.value });
   }
 
   handleClick = async (geo: any): Promise<void> => {
@@ -100,7 +106,7 @@ class App extends Component<Props, State> {
   }
 
   resetView = (): void => {
-    this.setState({ center: [0, 20], query: "", zoom: 1 });
+    this.setState({ center: [0, 20], countryName: "", population: "", query: "", zoom: 1 });
   }
 
   render() {
@@ -110,19 +116,22 @@ class App extends Component<Props, State> {
       loading,
       population,
       query,
+      year,
       zoom
     } = this.state;
 
     return (
       <div className="App">
-        <PopulationDisplay
-          countryName={countryName}
-          population={population}
-          isLoading={loading}
-        />
         <QueryPanel
           query={query}
           resetView={this.resetView}
+        />
+        <InfoPanel
+          countryName={countryName}
+          isLoading={loading}
+          onChange={this.handleChange}
+          population={population}
+          year={year}
         />
         <Map
           center={center}

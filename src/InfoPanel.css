@@ -1,0 +1,9 @@
+.infoPanel {
+  border-radius: 6px;
+  box-shadow: -1px 2px 5px #263238;
+  background-color: white;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  padding: 10px 25px;
+}
