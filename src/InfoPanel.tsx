@@ -4,6 +4,7 @@ import { PopulationDisplay } from "./PopulationDisplay";
 import { Slider } from "./Slider";
 
 import "./InfoPanel.css";
+import "./panel.css";
 
 interface Props {
   countryName: string;
@@ -16,7 +17,7 @@ interface Props {
 export const InfoPanel = (props: Props) => {
   const { countryName, population, isLoading, onChange, year } = props;
   return countryName ?
-    (<div className="infoPanel">
+    (<div className="panel infoPanel">
       <PopulationDisplay
         countryName={countryName}
         population={population}

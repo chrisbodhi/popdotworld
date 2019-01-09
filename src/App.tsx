@@ -3,8 +3,8 @@ import axios, { AxiosResponse } from "axios";
 import { geoPath } from "d3-geo";
 import { geoTimes } from "d3-geo-projection";
 
-import { Map } from './Map';
 import { InfoPanel } from "./InfoPanel";
+import { Map } from './Map';
 import { QueryPanel } from "./QueryPanel";
 
 import './App.css';

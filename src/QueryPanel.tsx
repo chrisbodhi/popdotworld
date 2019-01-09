@@ -4,6 +4,7 @@ import { Query } from "./Query";
 import { ResetButton } from "./ResetButton";
 
 import "./QueryPanel.css";
+import "./panel.css";
 
 interface Props {
   query: string;
@@ -14,7 +15,7 @@ export const QueryPanel = (props: Props) => {
   const { query, resetView } = props;
   return (
     query.length ? (
-      <div className="panel">
+      <div className="panel queryPanel">
         <Query query={query} />
         <ResetButton resetView={resetView} />
       </div>
