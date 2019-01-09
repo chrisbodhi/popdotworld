@@ -1,9 +1,5 @@
-.panel {
-  border-radius: 6px;
-  box-shadow: -1px 2px 5px #263238;
-  background-color: white;
+.queryPanel {
   position: absolute;
   top: 20px;
   left: 20px;
-  padding: 10px 25px;
 }
