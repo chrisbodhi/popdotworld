@@ -92,15 +92,34 @@ class App extends Component<Props, State> {
     }
   }
 
-  generateQuery(name: string): string {
-    const query = `SELECT ?population WHERE {\n\t?country rdfs:label "${name}"@en .\n\t?country dbp:populationCensus|dbo:populationTotal ?population .\n}`;
+  generateQuery(name: string = "United States"): string {
+    const year = 2000;
+    const query = `PREFIX dw: <https://fmerchant.linked.data.world/d/world-bank-co2/>
+      PREFIX pop: <https://doe.linked.data.world/d/population-bycountry-1980-2010/>
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+      SELECT ?year ?tons ?num
+      FROM NAMED <https://data.world/fmerchant/world-bank-co2>
+      WHERE {
+          ?country dw:col-co2_data_cleaned-country_name "${name}" .
+          ?country dw:col-co2_data_cleaned-year ?year .
+          ?country dw:col-co2_data_cleaned-co2_kt ?tons .
+          FILTER (xsd:integer(?year) = ${year})
+          GRAPH <https://data.world/doe/population-bycountry-1980-2010/> {
+            ?info pop:col-populationbycountry19802010millions-column_a "${name}" .
+            ?info pop:col-populationbycountry19802010millions-${year} ?num .
+          }
+      }`;
     this.setState({ query });
     return query;
   }
 
   sendRequest(query: string): Promise<AxiosResponse> {
-    return axios.get("http://dbpedia.org/sparql", {
-      headers: { "Content-Type": "application/sparql-query" },
+    return axios.get("https://query.data.world/sparql/fmerchant/world-bank-co2", {
+      headers: {
+        Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
+        "Content-Type": "application/sparql-query"
+      },
       params: { query }
     });
   }
