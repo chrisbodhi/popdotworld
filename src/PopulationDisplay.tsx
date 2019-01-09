@@ -1,9 +1,13 @@
 import React from "react";
 
+interface ObjectLiteral {
+  [key: string]: any;
+}
+
 interface Props {
   countryName: string;
   isLoading: boolean;
-  population: string;
+  data: ObjectLiteral[];
 }
 
 const formatIter = (input: string, output: string): string => {
@@ -21,14 +25,22 @@ export const formatLongNumber = (longNum: string): string => {
   return formatIter(longNum, "");
 };
 
+// todo: rename this thing
+
 export const PopulationDisplay = (props: Props) => {
   if (props.isLoading) {
     return <div>...</div>;
   }
-  return props.population
-    ? (<div>
-        {props.countryName}: {formatLongNumber(props.population)}
-      </div>)
+  return props.data
+    ? (<ul>
+        {props.data.map(({ k, v }) => {
+          return (
+            <li>
+              {props.countryName}: {k} &mdash; {formatLongNumber(v)}
+            </li>
+          );
+        })}
+      </ul>)
     : <div />;
 };
 

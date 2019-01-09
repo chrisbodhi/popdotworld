@@ -25,11 +25,15 @@ interface SparqlResults {
   bindings: any[];
 }
 
+interface ObjectLiteral {
+  [key: string]: any;
+}
+
 interface State {
   center: number[];
   countryName: string;
+  data: ObjectLiteral[];
   loading: boolean;
-  population: string;
   query: string;
   year: string;
   zoom: number;
@@ -43,8 +47,8 @@ class App extends Component<Props, State> {
     this.state = {
       center: [0, 20],
       countryName: "",
+      data: [],
       loading: false,
-      population: "",
       query: "",
       year: "1980",
       zoom: 1
@@ -60,8 +64,8 @@ class App extends Component<Props, State> {
     if (countryName !== this.state.countryName) {
       this.setState({ loading: true });
       const { center, zoom } = this.getZoomProperties(geo);
-      const population = await this.getPopData(countryName);
-      this.setState({ center, countryName, population, loading: false, zoom });
+      const data = await this.formatData(countryName);
+      this.setState({ center, countryName, data, loading: false, zoom });
     }
   }
 
@@ -77,18 +81,18 @@ class App extends Component<Props, State> {
     return { center, zoom: 3 };
   }
 
-  async getPopData(name: string): Promise<string> {
+  async formatData(name: string): Promise<ObjectLiteral[]> {
     const query = this.generateQuery(name);
     try {
       const { data }: { data: SparqlResponse } = await this.sendRequest(query);
       const dataInfo = data.results.bindings;
-      const population = dataInfo.length ?
-        dataInfo[0].population.value :
-        "¯\\_(ツ)_/¯";
-      return population;
+      const vars = data.head.vars;
+      return vars.map(v => {
+        return { [v]: dataInfo.length ? dataInfo[0][v].value : "¯\\_(ツ)_/¯" };
+      });
     } catch (err) {
         console.error(err.message);
-        return "";
+        return [];
     }
   }
 
@@ -125,15 +129,15 @@ class App extends Component<Props, State> {
   }
 
   resetView = (): void => {
-    this.setState({ center: [0, 20], countryName: "", population: "", query: "", zoom: 1 });
+    this.setState({ center: [0, 20], countryName: "", data: [], query: "", zoom: 1 });
   }
 
   render() {
     const {
       center,
       countryName,
+      data,
       loading,
-      population,
       query,
       year,
       zoom
@@ -147,9 +151,9 @@ class App extends Component<Props, State> {
         />
         <InfoPanel
           countryName={countryName}
+          data={data}
           isLoading={loading}
           onChange={this.handleChange}
-          population={population}
           year={year}
         />
         <Map

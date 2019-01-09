@@ -6,21 +6,26 @@ import { Slider } from "./Slider";
 import "./InfoPanel.css";
 import "./panel.css";
 
+interface ObjectLiteral {
+  [key: string]: any;
+}
+
 interface Props {
   countryName: string;
+  data: ObjectLiteral[];
   isLoading: boolean;
   onChange: (ev: React.FormEvent<HTMLInputElement>) => void;
-  population: string;
   year: string;
 }
 
 export const InfoPanel = (props: Props) => {
-  const { countryName, population, isLoading, onChange, year } = props;
+  const { countryName, data, isLoading, onChange, year } = props;
   return countryName ?
     (<div className="panel infoPanel">
+      {/* todo: rename this thing */}
       <PopulationDisplay
         countryName={countryName}
-        population={population}
+        data={data}
         isLoading={isLoading}
       />
       <Slider
