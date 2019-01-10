@@ -1,4 +1,7 @@
 import React from "react";
+import flatten from "lodash.flatten";
+
+import "./DataDisplay.css";
 
 interface ObjectLiteral {
   [key: string]: any;
@@ -11,7 +14,7 @@ interface Props {
 }
 
 const formatIter = (input: string, output: string): string => {
-  if (!input.length) {
+  if (!input || !input.length) {
     return output.slice(0, -1);
   }
   const lastThree = input.slice(-3);
@@ -25,18 +28,18 @@ export const formatLongNumber = (longNum: string): string => {
   return formatIter(longNum, "");
 };
 
-// todo: rename this thing
-
-export const PopulationDisplay = (props: Props) => {
+export const DataDisplay = (props: Props) => {
   if (props.isLoading) {
     return <div>...</div>;
   }
+  const keys = flatten(props.data.map(data => Object.keys(data)));
+
   return props.data
     ? (<ul>
-        {props.data.map(({ k, v }) => {
+        {props.data.map((data, index) => {
           return (
-            <li>
-              {props.countryName}: {k} &mdash; {formatLongNumber(v)}
+            <li key={`${keys[index]}`}>
+              {props.countryName}: {keys[index]} &mdash; {formatLongNumber(data[keys[index]].split(".")[0])}
             </li>
           );
         })}
@@ -44,4 +47,4 @@ export const PopulationDisplay = (props: Props) => {
     : <div />;
 };
 
-export default PopulationDisplay;
+export default DataDisplay;
