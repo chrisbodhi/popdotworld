@@ -1,6 +1,6 @@
 import React from "react";
 
-import { PopulationDisplay } from "./PopulationDisplay";
+import { DataDisplay } from "./DataDisplay";
 import { Slider } from "./Slider";
 
 import "./InfoPanel.css";
@@ -22,8 +22,7 @@ export const InfoPanel = (props: Props) => {
   const { countryName, data, isLoading, onChange, year } = props;
   return countryName ?
     (<div className="panel infoPanel">
-      {/* todo: rename this thing */}
-      <PopulationDisplay
+      <DataDisplay
         countryName={countryName}
         data={data}
         isLoading={isLoading}

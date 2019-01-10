@@ -24,8 +24,10 @@ const formatIter = (input: string, output: string): string => {
   return formatIter(truncatedInput, nextStep);
 };
 
-export const formatLongNumber = (longNum: string): string => {
-  return formatIter(longNum, "");
+export const formatLongNumber = (key: "Population" | "CO2" | string, longNum: string): string => {
+  const num = key === "Population" ? (parseFloat(longNum) * 1000000).toString() : longNum;
+  const roundedNum = num.split(".")[0];
+  return formatIter(roundedNum, "");
 };
 
 export const DataDisplay = (props: Props) => {
@@ -39,7 +41,7 @@ export const DataDisplay = (props: Props) => {
         {props.data.map((data, index) => {
           return (
             <li key={`${keys[index]}`}>
-              {props.countryName}: {keys[index]} &mdash; {formatLongNumber(data[keys[index]].split(".")[0])}
+              {props.countryName}: {keys[index]} &mdash; {formatLongNumber(keys[index], data[keys[index]])}
             </li>
           );
         })}

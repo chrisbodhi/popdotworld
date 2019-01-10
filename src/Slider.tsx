@@ -9,7 +9,7 @@ export const Slider = (props: Props) => {
   const { onChange, year } = props;
   return (
     <React.Fragment>
-      <input type="range" onChange={onChange} min="1980" max="2010" />
+      <input type="range" onChange={onChange} min="1980" max="2010" value={year} />
       <label>{year}</label>
     </React.Fragment>
 )
