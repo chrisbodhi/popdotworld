@@ -1,3 +1,11 @@
 ul {
   text-align: left;
 }
+
+.panelToggle {
+  font-weight: 200;
+}
+
+.panelToggle:hover {
+  cursor: pointer;
+}

@@ -1,17 +1,8 @@
 import React from "react";
+
 import flatten from "lodash.flatten";
 
 import "./DataDisplay.css";
-
-interface ObjectLiteral {
-  [key: string]: any;
-}
-
-interface Props {
-  countryName: string;
-  isLoading: boolean;
-  data: ObjectLiteral[];
-}
 
 const formatIter = (input: string, output: string): string => {
   if (!input || !input.length) {
@@ -30,18 +21,32 @@ export const formatLongNumber = (key: "Population" | "CO2" | string, longNum: st
   return formatIter(roundedNum, "");
 };
 
-export const DataDisplay = (props: Props) => {
-  if (props.isLoading) {
-    return <div>...</div>;
-  }
-  const keys = flatten(props.data.map(data => Object.keys(data)));
+interface ObjectLiteral {
+  [key: string]: any;
+}
 
-  return props.data
+interface Props {
+  isLoading: boolean;
+  data: ObjectLiteral[];
+  panelName: string;
+  toggleQueryPanel: (name: string) => void;
+}
+
+export const DataDisplay = (props: Props): JSX.Element => {
+  const { data, isLoading, panelName, toggleQueryPanel } = props;
+  const keys = flatten(data.map(d => Object.keys(d)));
+  console.log("panelName", panelName);
+  return data
     ? (<ul>
-        {props.data.map((data, index) => {
+        {data.map((d, index) => {
           return (
             <li key={`${keys[index]}`}>
-              {props.countryName}: {keys[index]} &mdash; {formatLongNumber(keys[index], data[keys[index]])}
+              {keys[index]}: {isLoading ? "🤔" : formatLongNumber(keys[index], d[keys[index]])}
+              &nbsp;&nbsp;[<span
+                className="panelToggle"
+                onClick={() => toggleQueryPanel(keys[index])}>
+                  {keys[index] === panelName ? "hide" : "show"} query
+              </span>]
             </li>
           );
         })}

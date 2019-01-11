@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import axios, { AxiosResponse } from "axios";
 import { geoPath } from "d3-geo";
 import { geoTimes } from "d3-geo-projection";
@@ -33,11 +34,12 @@ interface ObjectLiteral {
 
 interface State {
   center: number[];
+  co2Query: string;
   countryName: string;
   data: ObjectLiteral[];
   geo: any;
   loading: boolean;
-  query: string;
+  popQuery: string;
   year: string;
   zoom: number;
 }
@@ -49,46 +51,49 @@ class App extends Component<Props, State> {
     super(props);
     this.state = {
       center: [0, 20],
+      co2Query: "",
       countryName: "",
       data: [],
       loading: false,
       geo: "",
-      query: "",
+      popQuery: "",
       year: "1980",
       zoom: 1
     } as State;
   }
 
+  // todo: lol where tf to debounce?
+
   handleChange = async (event: React.FormEvent<HTMLInputElement>) => {
     this.setState({ year: event.currentTarget.value });
-    await this.collectData();
+    await this.collectData(this.state.countryName);
   }
 
   handleClick = async (geo: any): Promise<void> => {
     const countryName = geo.properties.brk_name;
     if (countryName !== this.state.countryName) {
       this.setState({ geo, countryName });
-      await this.collectData();
+      await this.collectData(countryName);
     }
-  }
+  };
 
-  collectData = debounce(async (): Promise<void> => {
-    this.setState({ loading: true, query: "" });
+  collectData = async (countryName: string): Promise<void> => {
+    this.setState({ co2Query: "", loading: true, popQuery: "" });
     const { center, zoom } = this.getZoomProperties(this.state.geo);
     const queries = [
       {
-        query: this.generatePopQuery(this.state.countryName, this.state.year),
+        query: this.generatePopQuery(countryName, this.state.year),
         slug: "doe/population-bycountry-1980-2010"
       }, {
-        query: this.generateCO2Query(this.state.countryName, this.state.year),
+        query: this.generateCO2Query(countryName, this.state.year),
         slug: "fmerchant/world-bank-co2"
       }];
-    // todo: set proper query state
-    this.setState({ query: queries[0].query });
+    this.setState({ popQuery: queries[0].query });
+    this.setState({ co2Query: queries[1].query });
     const responseData = await this.executeQueries(queries);
     const data = this.formatData(responseData);
     this.setState({ center, data, loading: false, zoom });
-  }, 100)
+  };
 
   projection() {
     return geoTimes()
@@ -125,25 +130,24 @@ class App extends Component<Props, State> {
 
   generatePopQuery(name: string, year: string): string {
     const query = `PREFIX : <https://doe.linked.data.world/d/population-bycountry-1980-2010/>
-    SELECT ?Population
-    WHERE {
-        ?country :col-populationbycountry19802010millions-column_a "${name}" .
-        ?country :col-populationbycountry19802010millions-${year} ?Population .
-    }
-    `;
+SELECT ?Population
+WHERE {
+    ?country :col-populationbycountry19802010millions-column_a "${name}" .
+    ?country :col-populationbycountry19802010millions-${year} ?Population .
+}`;
     return query;
   }
 
   generateCO2Query(name:string, year: string): string {
     const query = `PREFIX dw: <https://fmerchant.linked.data.world/d/world-bank-co2/>
-    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    SELECT ?CO2
-    WHERE {
-      ?country dw:col-co2_data_cleaned-country_name "${name}" .
-      ?country dw:col-co2_data_cleaned-year ?year .
-      ?country dw:col-co2_data_cleaned-co2_kt ?CO2 .
-      FILTER (xsd:integer(?year) = ${year})
-    }`;
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?CO2
+WHERE {
+  ?country dw:col-co2_data_cleaned-country_name "${name}" .
+  ?country dw:col-co2_data_cleaned-year ?year .
+  ?country dw:col-co2_data_cleaned-co2_kt ?CO2 .
+  FILTER (xsd:integer(?year) = ${year})
+}`;
     return query;
   }
 
@@ -158,31 +162,31 @@ class App extends Component<Props, State> {
   }
 
   resetView = (): void => {
-    this.setState({ center: [0, 20], countryName: "", data: [], query: "", zoom: 1 });
+    this.setState({ center: [0, 20], co2Query: "", countryName: "", data: [], popQuery: "", zoom: 1 });
   }
 
   render() {
     const {
       center,
+      co2Query,
       countryName,
       data,
       loading,
-      query,
+      popQuery,
       year,
       zoom
     } = this.state;
 
     return (
       <div className="App">
-        <QueryPanel
-          query={query}
-          resetView={this.resetView}
-        />
         <InfoPanel
+          key={new Date().toString()}
           countryName={countryName}
           data={data}
           isLoading={loading}
           onChange={this.handleChange}
+          queries={({ Population: popQuery, CO2: co2Query })}
+          resetView={this.resetView}
           year={year}
         />
         <Map
