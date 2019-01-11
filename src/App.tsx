@@ -7,8 +7,8 @@ import debounce from "lodash.debounce";
 import flatten from "lodash.flatten";
 
 import { InfoPanel } from "./InfoPanel";
-import { Map } from './Map';
-import { QueryPanel } from "./QueryPanel";
+import { Map } from "./Map";
+import { ObjectLiteral } from "./types";
 
 import './App.css';
 

@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { DataDisplay } from "./DataDisplay";
 import { QueryPanel } from "./QueryPanel";
 import { Slider } from "./Slider";
+import { ObjectLiteral } from "./types";
 
 import "./InfoPanel.css";
 import "./panel.css";

@@ -2,6 +2,8 @@ import React from "react";
 
 import flatten from "lodash.flatten";
 
+import { ObjectLiteral } from "./types";
+
 import "./DataDisplay.css";
 
 const formatIter = (input: string, output: string): string => {
