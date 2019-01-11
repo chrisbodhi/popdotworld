@@ -16,7 +16,7 @@ const popScale = scaleLinear()
 // min from Bhutan; max from China
 const co2TonScale = scaleLinear()
   .domain([8256969, 3.667])
-  .range(["#6b5d00", "#ffde05", "#fff194"] as any[]);
+  .range(["#407742", "#0aff12", "#94ff97"] as any[]);
 
 interface Props {
   center: number[];
