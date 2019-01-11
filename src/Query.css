@@ -8,7 +8,8 @@ hr {
 }
 
 pre {
-  color: blue;
+  color: #263238;
   font-family: 'Courier New', Courier, monospace;
+  font-size: 0.85em;
   text-align: left;
 }

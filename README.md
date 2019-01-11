@@ -1,3 +1,10 @@
+# Pop Dot World
+
+```bash
+# .env
+REACT_APP_TOKEN=yer_dw_token
+```
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

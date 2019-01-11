@@ -1,4 +1,4 @@
-import { formatLongNumber } from "../PopulationDisplay";
+import { formatLongNumber } from "../DataDisplay";
 
 const testCases: {[key: string]: string} = {
   "1": "1",
@@ -16,7 +16,7 @@ const testCases: {[key: string]: string} = {
 describe("formatLongNumber", () => {
   it("returns the correct output for the input", () => {
     for (const num in testCases) {
-      expect(formatLongNumber(num)).toEqual(testCases[num]);
+      expect(formatLongNumber("any-key", num)).toEqual(testCases[num]);
     }
   });
 });
