@@ -21,6 +21,17 @@ export const formatLongNumber = (key: "Population" | "CO2" | string, longNum: st
   return formatIter(roundedNum, "");
 };
 
+const selectLabel = (input: string): string => {
+  switch(input) {
+    case "Population":
+      return "people";
+    case "CO2":
+      return "kt"
+    default:
+      return "";
+  }
+}
+
 interface ObjectLiteral {
   [key: string]: any;
 }
@@ -35,18 +46,17 @@ interface Props {
 export const DataDisplay = (props: Props): JSX.Element => {
   const { data, isLoading, panelName, toggleQueryPanel } = props;
   const keys = flatten(data.map(d => Object.keys(d)));
-  console.log("panelName", panelName);
   return data
     ? (<ul>
         {data.map((d, index) => {
           return (
             <li key={`${keys[index]}`}>
-              {keys[index]}: {isLoading ? "🤔" : formatLongNumber(keys[index], d[keys[index]])}
-              &nbsp;&nbsp;[<span
+              <span className="label">{keys[index]}</span>: {isLoading ? "🤔" : formatLongNumber(keys[index], d[keys[index]])} {selectLabel(keys[index])}
+              <br /><span
                 className="panelToggle"
                 onClick={() => toggleQueryPanel(keys[index])}>
                   {keys[index] === panelName ? "hide" : "show"} query
-              </span>]
+              </span>
             </li>
           );
         })}

@@ -2,8 +2,17 @@ ul {
   text-align: left;
 }
 
+ul li {
+  margin-bottom: 10px;
+}
+
+.label {
+  text-decoration: underline;
+}
+
 .panelToggle {
   font-weight: 200;
+  text-align: right;
 }
 
 .panelToggle:hover {

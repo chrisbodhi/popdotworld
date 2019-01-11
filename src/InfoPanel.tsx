@@ -33,10 +33,7 @@ export class InfoPanel extends Component<Props, State> {
   }
 
   toggleQueryPanel = (name: string): void => {
-    console.log("showQueryPanel", name);
-    console.log("this.state.queryName", this.state.queryName);
     if (name === this.state.queryName) {
-      console.log("~~~true");
       this.setState({ query: "", queryName: "" });
     } else {
       this.setState({ query: this.props.queries[name], queryName: name });

@@ -62,37 +62,39 @@ class App extends Component<Props, State> {
     } as State;
   }
 
-  // todo: lol where tf to debounce?
-
   handleChange = async (event: React.FormEvent<HTMLInputElement>) => {
-    this.setState({ year: event.currentTarget.value });
-    await this.collectData(this.state.countryName);
+    const year = event.currentTarget.value;
+    this.setState({ year });
+    await this.collectData(this.state.countryName, year);
   }
 
   handleClick = async (geo: any): Promise<void> => {
     const countryName = geo.properties.brk_name;
     if (countryName !== this.state.countryName) {
-      this.setState({ geo, countryName });
-      await this.collectData(countryName);
+      const { center, zoom } = this.getZoomProperties(geo);
+      this.setState({ center, geo, countryName, zoom });
+      await this.collectData(countryName, this.state.year);
     }
   };
 
-  collectData = async (countryName: string): Promise<void> => {
-    this.setState({ co2Query: "", loading: true, popQuery: "" });
-    const { center, zoom } = this.getZoomProperties(this.state.geo);
+  collectData = async (countryName: string, year: string): Promise<void> => {
+    this.setState({ loading: true });
     const queries = [
       {
-        query: this.generatePopQuery(countryName, this.state.year),
+        query: this.generatePopQuery(countryName, year),
         slug: "doe/population-bycountry-1980-2010"
       }, {
-        query: this.generateCO2Query(countryName, this.state.year),
+        query: this.generateCO2Query(countryName, year),
         slug: "fmerchant/world-bank-co2"
-      }];
-    this.setState({ popQuery: queries[0].query });
-    this.setState({ co2Query: queries[1].query });
+    }];
     const responseData = await this.executeQueries(queries);
     const data = this.formatData(responseData);
-    this.setState({ center, data, loading: false, zoom });
+    this.setState({
+      co2Query: queries[1].query,
+      data,
+      loading: false,
+      popQuery: queries[0].query
+    });
   };
 
   projection() {
@@ -103,7 +105,8 @@ class App extends Component<Props, State> {
 
   getZoomProperties(geo: any): { center: number[]; zoom: number; } {
     const path = geoPath().projection(this.projection())
-    const center = this.projection().invert(path.centroid(geo))
+    const center = this.projection().invert(path.centroid(geo));
+    center[0] -= (innerWidth / 4);
     return { center, zoom: 3 };
   }
 
