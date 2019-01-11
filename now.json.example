@@ -1,0 +1,6 @@
+{
+    "version": 1,
+    "env": {
+        "REACT_APP_TOKEN": DATA_DOT_WORLD_TOKEN
+    }
+}

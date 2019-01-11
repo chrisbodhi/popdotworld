@@ -5,6 +5,12 @@
 REACT_APP_TOKEN=yer_dw_token
 ```
 
+## Deploying
+
+Copy and rename the file `now.json.example` to `now.json`, and replace the value `DATA_DOT_WORLD_TOKEN` with your read-write API token, found at [on the Advanced Settings page](https://data.world/settings/advanced). Then, using the [Now CLI tool](https://zeit.co/now), simply run `now` from the project root.
+
+* * *
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -65,10 +71,6 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/ma
 ### Advanced Configuration
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
 
 ### `npm run build` fails to minify
 
