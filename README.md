@@ -1,9 +1,25 @@
 # Pop Dot World
 
+## Running Locally
+
+First, in the project root, create a `.env` file with the key `REACT_APP_TOKEN`. Then, set the value to your read-write API token, found  [on the Advanced Settings page](https://data.world/settings/advanced):
+
 ```bash
 # .env
-REACT_APP_TOKEN=yer_dw_token
+REACT_APP_TOKEN=yer_token
 ```
+
+Please note that this means your token will be exposed in the Network tab of any requests that are sent from the app. This isn't a great idea, and I apologize for not yet having a server-side component to this app.
+
+Then, run `npm install` to install the necessary dependencies.
+
+Lastly, run `npm start` to view the app in the browser!
+
+## Deploying
+
+Copy and rename the file `now.json.example` to `now.json`, and replace the value `DATA_DOT_WORLD_TOKEN` with your read-write API token. Then, using the [Now CLI tool](https://zeit.co/now), simply run `now` from the project root.
+
+* * *
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -65,10 +81,6 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/ma
 ### Advanced Configuration
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
 
 ### `npm run build` fails to minify
 
