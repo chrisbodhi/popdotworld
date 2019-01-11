@@ -34,10 +34,6 @@ const selectLabel = (input: string): string => {
   }
 }
 
-interface ObjectLiteral {
-  [key: string]: any;
-}
-
 interface Props {
   isLoading: boolean;
   data: ObjectLiteral[];

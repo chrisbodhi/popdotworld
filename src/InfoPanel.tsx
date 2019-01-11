@@ -8,10 +8,6 @@ import { ObjectLiteral } from "./types";
 import "./InfoPanel.css";
 import "./panel.css";
 
-interface ObjectLiteral {
-  [key: string]: any;
-}
-
 interface Props {
   countryName: string;
   data: ObjectLiteral[];

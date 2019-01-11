@@ -28,10 +28,6 @@ interface SparqlResults {
   bindings: any[];
 }
 
-interface ObjectLiteral {
-  [key: string]: any;
-}
-
 interface State {
   center: number[];
   co2Query: string;
@@ -40,6 +36,7 @@ interface State {
   geo: any;
   loading: boolean;
   popQuery: string;
+  tons: number;
   year: string;
   zoom: number;
 }
@@ -57,6 +54,7 @@ class App extends Component<Props, State> {
       loading: false,
       geo: "",
       popQuery: "",
+      tons: 0,
       year: "1980",
       zoom: 1
     } as State;
@@ -72,7 +70,7 @@ class App extends Component<Props, State> {
     const countryName = geo.properties.brk_name;
     if (countryName !== this.state.countryName) {
       const { center, zoom } = this.getZoomProperties(geo);
-      this.setState({ center, geo, countryName, zoom });
+      this.setState({ center, countryName, geo, zoom });
       await this.collectData(countryName, this.state.year);
     }
   };
@@ -88,12 +86,13 @@ class App extends Component<Props, State> {
         slug: "fmerchant/world-bank-co2"
     }];
     const responseData = await this.executeQueries(queries);
-    const data = this.formatData(responseData);
+    const data = this.formatResponseData(responseData);
     this.setState({
       co2Query: queries[1].query,
       data,
       loading: false,
-      popQuery: queries[0].query
+      popQuery: queries[0].query,
+      tons: data[1].CO2
     });
   };
 
@@ -121,7 +120,7 @@ class App extends Component<Props, State> {
     }
   }
 
-  formatData(data: SparqlResponse[]): ObjectLiteral[] {
+  formatResponseData(data: SparqlResponse[]): ObjectLiteral[] {
       return flatten(data.map((d) => {
         const dataInfo = d.results.bindings;
         const vars = d.head.vars;
@@ -176,6 +175,7 @@ WHERE {
       data,
       loading,
       popQuery,
+      tons,
       year,
       zoom
     } = this.state;
@@ -196,6 +196,7 @@ WHERE {
           center={center}
           handleClick={this.handleClick}
           selected={countryName}
+          tons={tons}
           zoom={zoom}
         />
       </div>
