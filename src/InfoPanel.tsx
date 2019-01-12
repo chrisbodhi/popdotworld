@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import { DataDisplay } from "./DataDisplay";
 import { QueryPanel } from "./QueryPanel";
+import { ResetButton } from "./ResetButton";
 import { Slider } from "./Slider";
 import { ObjectLiteral } from "./types";
 
@@ -41,7 +42,7 @@ export class InfoPanel extends Component<Props, State> {
     const { countryName, data, isLoading, onChange, resetView, year } = this.props;
     return countryName ? (
       <React.Fragment>
-        <QueryPanel query={this.state.query} resetView={resetView} />
+        <QueryPanel query={this.state.query} />
         <div className="panel infoPanel">
           <span className="countryName">{countryName}</span>
           <DataDisplay
@@ -55,6 +56,8 @@ export class InfoPanel extends Component<Props, State> {
             onChange={onChange}
             year={year}
             />
+          <hr />
+          <ResetButton resetView={resetView} />
         </div>
     </React.Fragment>
     ) : null;
