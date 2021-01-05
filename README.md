@@ -1,5 +1,7 @@
 # Pop Dot World
 
+![screenshot of Australia's stats](https://user-images.githubusercontent.com/4071697/103609188-eff02400-4ee2-11eb-8abf-f9267e3f046a.png)
+
 ## Running Locally
 
 First, in the project root, create a `.env` file with the key `REACT_APP_TOKEN`. Then, set the value to your read-write API token, found  [on the Advanced Settings page](https://data.world/settings/advanced):
